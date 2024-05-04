@@ -1,12 +1,12 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: react-ssr-template
-  title: React SSR Template
-  description: Create a website powered with Next.js
+  name: nodejsapi-template
+  title: Node JS API Template
+  description: Create an API powered with Node JS
   tags:
     - recommended
-    - react
+    - nodejs
 spec:
   owner: web@example.com
   type: website
