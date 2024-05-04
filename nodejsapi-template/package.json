@@ -1,5 +1,5 @@
 {
-  "name": "nodeapi-service",
+  "name": "nodejsapi-service",
   "version": "1.0.0",
   "description": "A simple Node.js service",
   "main": "server.js",

@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1beta2
+kind: Location
+metadata:
+  name: nodejsapi-template
+  description: Template for creating a Node.js service
+spec:
+  type: url
+  target: https://github.com/Hearaman/backstage-templates/tree/main/nodejsapi-template/template.yaml
+
+---
+apiVersion: backstage.io/v1beta2
+kind: Location
+metadata:
+  name: htmlwebsite-template
+  description: Template for creating a html website
+spec:
+  type: url
+  target: https://github.com/Hearaman/backstage-templates/htmlwebsite_template/template.yml
+

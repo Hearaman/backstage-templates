@@ -16,7 +16,7 @@ spec:
       name: Template Files
       action: fetch:template
       input:
-        url: https://github.com/Hearaman/backstage-templates/tree/main/nodejsapi_template
+        url: https://github.com/Hearaman/backstage-templates/tree/main/nodejsapi-template
         files:
           - Dockerfile
           - server.js
