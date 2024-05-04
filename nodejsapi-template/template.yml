@@ -1,0 +1,33 @@
+apiVersion: backstage.io/v1beta2
+kind: Template
+metadata:
+  name: nodejsapi-template
+  title: Node.js Service Template
+  description: A simple Node.js service template.
+  tags:
+    - node
+    - service
+spec:
+  owner: Hearaman
+  type: service
+
+  steps:
+    - id: template
+      name: Template Files
+      action: fetch:template
+      input:
+        url: https://github.com/Hearaman/backstage-templates/tree/main/nodejsapi_template
+        files:
+          - Dockerfile
+          - server.js
+          - package.json
+
+  parameters:
+    - title: Service Configuration
+      required:
+        - serviceName
+      properties:
+        serviceName:
+          type: string
+          description: The name of your service.
+
