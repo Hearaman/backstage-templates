@@ -1,0 +1,73 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-jenkins-pipeline
+  title: Create Jenkins Pipeline
+  description: This template sets up a Jenkins pipeline for your project.
+spec:
+  owner: team-cicd
+  type: service
+
+  parameters:
+    - title: First Step
+      required:
+        - repoName
+        - owner
+      properties:
+        projectLocation:
+          type: string
+          default: "https://github.com"
+          description: "Where is your project located?"
+          ui:field: ReadOnlyField
+          ui:options:
+            readOnly: true
+        repoName:
+          type: string
+          description: "What is your repository name?"
+        owner:
+          type: string
+          description: "Owner of the repository?"
+
+    - title: Second Step
+      required:
+        - pipelineType
+      properties:
+        pipelineType:
+          type: string
+          description: "What kind of pipeline do you need?"
+          enum:
+            - java
+            - python
+            - nodejs
+          ui:widget: Select
+
+  steps:
+    - id: setup
+      name: Setup Jenkins Pipeline
+      action: custom.setupJenkinsPipeline
+      input:
+        projectLocation: '{{ parameters.projectLocation }}'
+        repoName: '{{ parameters.repoName }}'
+        owner: '{{ parameters.owner }}'
+        pipelineType: '{{ parameters.pipelineType }}'
+
+    - id: register
+      name: Register Webhook
+      action: custom.registerWebhook
+      input:
+        repoName: '{{ parameters.repoName }}'
+        owner: '{{ parameters.owner }}'
+        events:
+          - push
+          - pull_request
+
+output:
+  links:
+    - url: '{{ steps.setup.output.jenkinsUrl }}'
+      title: Jenkins Pipeline
+    - url: '{{ steps.register.output.webhookUrl }}'
+      title: GitHub Webhook
+
+permissions:
+  id: '{{ include "uuid" . }}'
+  resourceRef: '{{ parameters.repoName }}'
