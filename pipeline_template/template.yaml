@@ -4,69 +4,79 @@ metadata:
   name: create-jenkins-pipeline
   title: Create Jenkins Pipeline
   description: This template sets up a Jenkins pipeline for your project.
+  tags:
+    - recommended
+    - nodejs
 spec:
   owner: web@example.com
   type: website
   parameters:
-    - title: First Step
+    - title: Provide some simple information
       required:
-        - repoName
+        - component_id
         - owner
       properties:
-        projectLocation:
+        component_id:
+          title: Name
           type: string
-          default: "https://github.com"
-          description: "Where is your project located?"
-          ui:field: ReadOnlyField
-          ui:options:
-            readOnly: true
-        repoName:
+          description: Unique name of the component
+          ui:field: EntityNamePicker
+        description:
+          title: Description
           type: string
-          description: "What is your repository name?"
+          description: Help others understand what this website is for.
         owner:
+          title: Owner
           type: string
-          description: "Owner of the repository?"
-
-    - title: Second Step
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+    - title: Choose a location
       required:
-        - pipelineType
+        - repoUrl
       properties:
-        pipelineType:
+        repoUrl:
+          title: Repository Location
           type: string
-          description: "What kind of pipeline do you need?"
-          enum:
-            - java
-            - python
-            - nodejs
-          ui:widget: Select
-
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
   steps:
-    - id: setup
-      name: Setup Jenkins Pipeline
-      action: custom.setupJenkinsPipeline
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
       input:
-        projectLocation: '{{ parameters.projectLocation }}'
-        repoName: '{{ parameters.repoName }}'
-        owner: '{{ parameters.owner }}'
-        pipelineType: '{{ parameters.pipelineType }}'
+        url: ./skeleton
+        copyWithoutRender:
+          - .github/workflows/*
+        values:
+          component_id: ${{ parameters.component_id }}
+          description: ${{ parameters.description }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          owner: ${{ parameters.owner }}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts: ["github.com"]
+        description: This is ${{ parameters.component_id }}
+        repoUrl: ${{ parameters.repoUrl }}
 
     - id: register
-      name: Register Webhook
-      action: custom.registerWebhook
+      name: Register
+      action: catalog:register
       input:
-        repoName: '{{ parameters.repoName }}'
-        owner: '{{ parameters.owner }}'
-        events:
-          - push
-          - pull_request
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
 
-output:
-  links:
-    - url: '{{ steps.setup.output.jenkinsUrl }}'
-      title: Jenkins Pipeline
-    - url: '{{ steps.register.output.webhookUrl }}'
-      title: GitHub Webhook
-
-permissions:
-  id: '{{ include "uuid" . }}'
-  resourceRef: '{{ parameters.repoName }}'
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
