@@ -5,9 +5,8 @@ metadata:
   title: Create Jenkins Pipeline
   description: This template sets up a Jenkins pipeline for your project.
 spec:
-  owner: team-cicd
-  type: service
-
+  owner: web@example.com
+  type: website
   parameters:
     - title: First Step
       required:
