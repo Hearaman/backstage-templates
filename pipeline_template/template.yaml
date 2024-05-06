@@ -63,11 +63,5 @@ spec:
           - push
           - pull_request
 
-  output:
-  links:
-    - url: '{{ steps.setup.output.jenkinsUrl }}'
-      title: Jenkins Pipeline
-    - url: '{{ steps.register.output.webhookUrl }}'
-      title: GitHub Webhook
 
 
