@@ -37,11 +37,7 @@ spec:
         pipelineType:
           type: string
           description: "What kind of pipeline do you need?"
-          enum:
-            - java
-            - python
-            - nodejs
-          ui:widget: Select
+          
 
   steps:
     - id: setup
